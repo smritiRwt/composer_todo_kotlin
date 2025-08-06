@@ -1,5 +1,5 @@
+// data/AppDatabase.kt
 package com.example.demo.data
-
 
 import android.content.Context
 import androidx.room.Database
@@ -13,20 +13,12 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun todoDao(): TodoDao
 
     companion object {
-        @Volatile
-        private var instance: AppDatabase? = null
+        @Volatile private var INSTANCE: AppDatabase? = null
         fun getInstance(context: Context): AppDatabase =
-            instance ?: synchronized(this) {
-                instance ?: buildDatabase(context).also { instance = it }
+            INSTANCE ?: synchronized(this) {
+                INSTANCE ?: Room.databaseBuilder(
+                    context, AppDatabase::class.java, "todo_db"
+                ).build().also { INSTANCE = it }
             }
-
-        private fun buildDatabase(context: Context)=
-            Room.databaseBuilder(context, AppDatabase::class.java,"todo_db")
-                .fallbackToDestructiveMigration()
-                .build()
-
-
     }
-
-
 }
